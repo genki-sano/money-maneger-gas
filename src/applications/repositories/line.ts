@@ -3,12 +3,6 @@ import { PushMessageRequestBody } from '@/domains/requestBody/pushMessage'
 import { ReplayMessageRequestBody } from '@/domains/requestBody/replayMessage'
 
 export interface ILineRepository {
-  replyMessage(
-    config: HttpClientConfig,
-    body: ReplayMessageRequestBody,
-  ): Promise<void>
-  pushMessage(
-    config: HttpClientConfig,
-    body: PushMessageRequestBody,
-  ): Promise<void>
+  replyMessage(config: HttpClientConfig, body: ReplayMessageRequestBody): void
+  pushMessage(config: HttpClientConfig, body: PushMessageRequestBody): void
 }

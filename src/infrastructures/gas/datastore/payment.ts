@@ -41,7 +41,7 @@ export class PaymentDataStore implements IPaymentDataStore {
     return y1 === y2 && m1 === m2
   }
 
-  public async getByDate(date: Date): Promise<PaymentDataStructure[]> {
+  public getByDate(date: Date): PaymentDataStructure[] {
     const lastRow = this.sheet.getLastRow()
     const lastColumn = this.sheet.getLastColumn()
 
@@ -49,7 +49,7 @@ export class PaymentDataStore implements IPaymentDataStore {
       return []
     }
 
-    const values = await this.sheet
+    const values = this.sheet
       .getRange(2, 1, lastRow - 1, lastColumn - 1)
       .getValues()
 

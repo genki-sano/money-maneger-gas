@@ -21,7 +21,7 @@ export class CreateMessageUseCase {
     this.propatyRepository = propatyRepository
   }
 
-  public async createTempReportMessage(): Promise<Message> {
+  public createTempReportMessage(): Message {
     const women = {
       name: this.propatyRepository.getWomenName(),
       price: 0,
@@ -32,7 +32,7 @@ export class CreateMessageUseCase {
     }
 
     const date = new Date()
-    const payments = await this.paymentRepository.getByDate(date)
+    const payments = this.paymentRepository.getByDate(date)
 
     payments.forEach((payment: PaymentDataStructure): void => {
       if (payment.name === women.name) {
@@ -123,7 +123,7 @@ export class CreateMessageUseCase {
     }
   }
 
-  public async createOtherMessage(): Promise<Message> {
+  public createOtherMessage(): Message {
     const formUrl = this.propatyRepository.getFormUrl()
     const text = 'フォームから支出を登録してね$ \n' + formUrl
     return new TextMessage(text)

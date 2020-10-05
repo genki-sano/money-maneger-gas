@@ -8,9 +8,5 @@ export type PostHttpHeaders = {
 export type RequestBody = PushMessageRequestBody | ReplayMessageRequestBody
 
 export interface IHttpClient {
-  post(
-    url: string,
-    headers: PostHttpHeaders,
-    body: RequestBody,
-  ): Promise<number>
+  post(url: string, headers: PostHttpHeaders, body: RequestBody): number
 }

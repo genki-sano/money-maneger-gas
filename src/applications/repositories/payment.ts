@@ -9,5 +9,5 @@ export interface PaymentDataStructure {
 }
 
 export interface IPaymentRepository {
-  getByDate(date: Date): Promise<PaymentDataStructure[]>
+  getByDate(date: Date): PaymentDataStructure[]
 }

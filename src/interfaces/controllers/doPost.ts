@@ -37,19 +37,19 @@ export class DoPostController {
     let messages: Message[] = []
     let replyToken = ''
 
-    request.events.forEach(async (event: WebhookEvent) => {
+    request.events.forEach((event: WebhookEvent) => {
       if (event.type === 'message') {
         replyToken = event.replyToken
         if (event.message.type === 'text') {
           if (event.message.text === 'レポート') {
-            const message = await this.createMessageUseCase.createTempReportMessage()
+            const message = this.createMessageUseCase.createTempReportMessage()
             messages.push(message)
           } else {
-            const message = await this.createMessageUseCase.createOtherMessage()
+            const message = this.createMessageUseCase.createOtherMessage()
             messages.push(message)
           }
         } else {
-          const message = await this.createMessageUseCase.createOtherMessage()
+          const message = this.createMessageUseCase.createOtherMessage()
           messages.push(message)
         }
       }

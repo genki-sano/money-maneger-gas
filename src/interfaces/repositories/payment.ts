@@ -11,7 +11,7 @@ export class PaymentRepository implements IPaymentRepository {
     this.store = store
   }
 
-  public async getByDate(date: Date): Promise<PaymentDataStructure[]> {
-    return await this.store.getByDate(date)
+  public getByDate(date: Date): PaymentDataStructure[] {
+    return this.store.getByDate(date)
   }
 }

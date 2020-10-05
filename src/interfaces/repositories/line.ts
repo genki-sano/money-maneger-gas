@@ -11,27 +11,27 @@ export class LineRepository implements ILineRepository {
     this.http = http
   }
 
-  public async replyMessage(
+  public replyMessage(
     config: HttpClientConfig,
     body: ReplayMessageRequestBody,
-  ) {
+  ): void {
     const url = 'https://api.line.me/v2/bot/message/reply'
     const headers = {
       'Content-Type': 'application/json; charset=UTF-8',
       ...config,
     }
-    await this.http.post(url, headers, body)
+    this.http.post(url, headers, body)
   }
 
-  public async pushMessage(
+  public pushMessage(
     config: HttpClientConfig,
     body: PushMessageRequestBody,
-  ) {
+  ): void {
     const url = 'https://api.line.me/v2/bot/message/push'
     const headers = {
       'Content-Type': 'application/json; charset=UTF-8',
       ...config,
     }
-    await this.http.post(url, headers, body)
+    this.http.post(url, headers, body)
   }
 }
