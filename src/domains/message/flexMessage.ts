@@ -6,7 +6,7 @@ export class FlexMessage {
   public readonly contents: FlexContainer
 
   public constructor(altText: string, contents: FlexContainer) {
-    this.type = 'text'
+    this.type = 'flex'
     this.altText = altText
     this.contents = contents
   }
