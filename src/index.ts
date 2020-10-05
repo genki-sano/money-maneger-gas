@@ -1,19 +1,26 @@
+import { HttpClient } from '@/infrastructures/gas/client/httpClient'
+import { PaymentDataStore } from '@/infrastructures/gas/datastore/payment'
+import { PropatyDataStore } from '@/infrastructures/gas/datastore/properties'
+import { DoPostController } from '@/interfaces/controllers/doPost'
+
 declare const global: {
   [x: string]: any
 }
 
-import PushMessageController from '@/interfaces/controllers/line/pushMessage'
-import WebhookController from '@/interfaces/controllers/line/webhook'
-import { getProperty } from '@/utils/gas'
+const httpClient = new HttpClient()
+const paymentDataStore = new PaymentDataStore()
+const propatyDataStore = new PropatyDataStore()
 
 global.doPost = (
   e: GoogleAppsScript.Events.DoPost,
 ): GoogleAppsScript.Content.TextOutput => {
   try {
-    const webhook = new WebhookController(
-      getProperty('LINE_CHANNEL_ACCESS_TOKEN'),
+    const controller = new DoPostController(
+      httpClient,
+      paymentDataStore,
+      propatyDataStore,
     )
-    webhook.execute(JSON.parse(e.postData.contents))
+    controller.replyMessage(JSON.parse(e.postData.contents))
   } catch (e) {
     console.log('ERROR: ', e.message)
   }
@@ -23,26 +30,8 @@ global.doPost = (
   ).setMimeType(ContentService.MimeType.JSON)
 }
 
-global.pushMonthlyMessage = (): void => {
-  try {
-    const pushMessage = new PushMessageController(
-      getProperty('LINE_CHANNEL_ACCESS_TOKEN'),
-    )
-    pushMessage.monthly()
-  } catch (e) {
-    console.log('ERROR: ', e.message)
-  }
-}
+global.onTimeDriven = (): void => {}
 
-global.pushInsertMessage = (
+global.onFormSubmit = (
   e: GoogleAppsScript.Events.SheetsOnFormSubmit,
-): void => {
-  try {
-    const pushMessage = new PushMessageController(
-      getProperty('LINE_CHANNEL_ACCESS_TOKEN'),
-    )
-    pushMessage.insert(e.range)
-  } catch (e) {
-    console.log('ERROR: ', e.message)
-  }
-}
+): void => {}
