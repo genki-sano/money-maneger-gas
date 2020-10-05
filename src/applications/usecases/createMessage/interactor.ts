@@ -4,6 +4,7 @@ import {
   PaymentDataStructure,
 } from '@/applications/repositories/payment'
 import { IPropatyRepository } from '@/applications/repositories/propaty'
+import { Emoji } from '@/domains/message/emoji'
 import { FlexMessage } from '@/domains/message/flexMessage'
 import { Message } from '@/domains/message/message'
 import { TextMessage } from '@/domains/message/textMessage'
@@ -126,7 +127,11 @@ export class CreateMessageUseCase {
   public createOtherMessage(): Message {
     const formUrl = this.propatyRepository.getFormUrl()
     const text = 'フォームから支出を登録してね$ \n' + formUrl
-    return new TextMessage(text)
+    return new TextMessage(text, this.getJamesWinkEmoji(text.indexOf('$')))
+  }
+
+  private getJamesWinkEmoji(index: number): Emoji {
+    return new Emoji(index, '5ac1bfd5040ab15980c9b435', '098')
   }
 
   private numberWithDelimiter(num: number): string {

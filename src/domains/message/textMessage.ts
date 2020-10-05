@@ -5,10 +5,14 @@ export class TextMessage {
   public readonly text: string
   public readonly emojis: Emoji[]
 
-  public constructor(text: string, emojis: Emoji[] = []) {
+  private toArray<T>(maybeArr: T | T[]): T[] {
+    return Array.isArray(maybeArr) ? maybeArr : [maybeArr]
+  }
+
+  public constructor(text: string, emojis: Emoji | Emoji[] = []) {
     this.type = 'text'
     this.text = text
-    this.emojis = emojis
+    this.emojis = this.toArray(emojis)
   }
 }
 
