@@ -22,7 +22,7 @@ global.doPost = (
     )
     controller.replyMessage(JSON.parse(e.postData.contents))
   } catch (e) {
-    console.log('ERROR: ', e.message)
+    console.error(e.stack)
   }
 
   return ContentService.createTextOutput(
