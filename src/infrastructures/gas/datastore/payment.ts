@@ -5,13 +5,17 @@ export class PaymentDataStore implements IPaymentDataStore {
   private readonly sheet: GoogleAppsScript.Spreadsheet.Sheet
 
   public constructor() {
-    const ss = SpreadsheetApp.getActiveSpreadsheet()
-    if (!ss) {
-      throw new Error('スプレッドシートが紐付いていません。')
+    const id = PropertiesService.getScriptProperties().getProperty('SHEET_ID')
+    if (!id) {
+      throw new Error(`"SHEET_ID"のプロパティが設定されていません。`)
     }
-    const sheet = ss.getSheetByName('支払った金額')
+    const ss = SpreadsheetApp.openById(id)
+    if (!ss) {
+      throw new Error('正しいシートIDではありません。')
+    }
+    const sheet = ss.getSheetByName('payments')
     if (!sheet) {
-      throw new Error(`"支払った金額"のシートが見つかりません。`)
+      throw new Error(`"payments"のシートが見つかりません。`)
     }
     this.sheet = sheet
   }
@@ -20,11 +24,11 @@ export class PaymentDataStore implements IPaymentDataStore {
     return {
       id: value[0],
       url: value[1],
-      name: value[3],
-      date: value[4],
-      price: value[5],
-      category: value[6],
-      memo: value[7] || '',
+      name: value[2],
+      date: value[3],
+      price: value[4],
+      category: value[5],
+      memo: value[6] || '',
     }
   }
 

@@ -6,9 +6,11 @@ import { Message } from '@/domains/message/message'
 import { IHttpClient } from '@/infrastructures/client/httpClient'
 import { IPaymentDataStore } from '@/infrastructures/datastore/payment'
 import { IPropatyDataStore } from '@/infrastructures/datastore/properties'
+import { FormRepository } from '@/interfaces/repositories/form'
 import { LineRepository } from '@/interfaces/repositories/line'
 import { PaymentRepository } from '@/interfaces/repositories/payment'
 import { PropatyRepository } from '@/interfaces/repositories/propaty'
+import { IFormDataStore } from '@/infrastructures/datastore/form'
 
 export class DoPostController {
   public readonly createMessageUseCase: CreateMessageUseCase
@@ -16,14 +18,17 @@ export class DoPostController {
 
   constructor(
     httpClient: IHttpClient,
+    formStore: IFormDataStore,
     paymentStore: IPaymentDataStore,
     propatyStore: IPropatyDataStore,
   ) {
+    const formRepository = new FormRepository(formStore)
     const lineRepository = new LineRepository(httpClient)
     const paymentRepository = new PaymentRepository(paymentStore)
     const propatyRepository = new PropatyRepository(propatyStore)
 
     this.createMessageUseCase = new CreateMessageUseCase(
+      formRepository,
       paymentRepository,
       propatyRepository,
     )

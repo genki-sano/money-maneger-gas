@@ -12,14 +12,6 @@ export class PropatyRepository implements IPropatyRepository {
     return this.store.getProperty('LINE_CHANNEL_ACCESS_TOKEN')
   }
 
-  public getFormId(): string {
-    return this.store.getProperty('FORM_ID')
-  }
-
-  public getFormUrl(): string {
-    return this.store.getProperty('FORM_URL')
-  }
-
   public getWomenId(): string {
     return this.store.getProperty('WOMEN_USER_ID')
   }

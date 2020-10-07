@@ -1,4 +1,5 @@
 import { FlexContainer } from '@/@types/line/message'
+import { IFormRepository } from '@/applications/repositories/form'
 import {
   IPaymentRepository,
   PaymentDataStructure,
@@ -11,13 +12,16 @@ import { TextMessage } from '@/domains/message/textMessage'
 import { User } from '@/domains/user'
 
 export class CreateMessageUseCase {
+  private readonly fromRepository: IFormRepository
   private readonly paymentRepository: IPaymentRepository
   private readonly propatyRepository: IPropatyRepository
 
   constructor(
+    fromRepository: IFormRepository,
     paymentRepository: IPaymentRepository,
     propatyRepository: IPropatyRepository,
   ) {
+    this.fromRepository = fromRepository
     this.paymentRepository = paymentRepository
     this.propatyRepository = propatyRepository
   }
@@ -125,7 +129,7 @@ export class CreateMessageUseCase {
   }
 
   public createOtherMessage(): Message {
-    const formUrl = this.propatyRepository.getFormUrl()
+    const formUrl = this.fromRepository.getPublishedUrl()
     const text = 'フォームから支出を登録してね$ \n' + formUrl
     return new TextMessage(text, this.getJamesWinkEmoji(text.indexOf('$')))
   }
