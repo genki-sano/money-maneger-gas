@@ -2,7 +2,7 @@ import { ILineRepository } from '@/applications/repositories/line'
 import { IPropatyRepository } from '@/applications/repositories/propaty'
 import { HttpClientConfig } from '@/domains/config/httpClientConfig'
 import { ReplayMessageRequestBody } from '@/domains/requestBody/replayMessage'
-import { ReplyMessageInputData } from './inputData'
+import { ReplyMessageInputData } from './request'
 
 export class ReplyMessageUseCase {
   private readonly lineRepository: ILineRepository

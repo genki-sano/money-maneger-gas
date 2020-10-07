@@ -1,6 +1,6 @@
 import { WebhookEvent, WebhookRequestBody } from '@/@types/line/webhook'
 import { CreateMessageUseCase } from '@/applications/usecases/createMessage/interactor'
-import { ReplyMessageInputData } from '@/applications/usecases/replyMessage/inputData'
+import { ReplyMessageInputData } from '@/applications/usecases/replyMessage/request'
 import { ReplyMessageUseCase } from '@/applications/usecases/replyMessage/interactor'
 import { Message } from '@/domains/message/message'
 import { IHttpClient } from '@/infrastructures/client/httpClient'
