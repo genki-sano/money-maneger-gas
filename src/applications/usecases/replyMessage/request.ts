@@ -2,9 +2,9 @@ import { Message } from '@/domains/message/message'
 import { ReplayMessageRequestBodyBusinessRule } from '@/domains/requestBody/replayMessage'
 
 export class ReplyMessageInputData {
-  public replyToken: string
-  public messages: Message[]
-  public notificationDisabled: boolean
+  public readonly replyToken: string
+  public readonly messages: Message[]
+  public readonly notificationDisabled: boolean
 
   constructor(
     replyToken: string,

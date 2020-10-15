@@ -1,13 +1,10 @@
-export interface PaymentDataStructure {
-  id: string
-  url: string
-  name: string
-  date: Date
-  price: number
-  category: string
-  memo: string
-}
+import { Payment } from '@/domains/payment'
+
+export type PaymentDataStructure = Payment
 
 export interface IPaymentRepository {
+  save(payment: PaymentDataStructure): boolean
+  destory(id: string): number
+  find(id: string): PaymentDataStructure | null
   getByDate(date: Date): PaymentDataStructure[]
 }

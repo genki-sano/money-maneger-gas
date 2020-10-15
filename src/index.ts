@@ -3,6 +3,8 @@ import { PaymentDataStore } from '@/infrastructures/gas/datastore/payment'
 import { PropatyDataStore } from '@/infrastructures/gas/datastore/properties'
 import { DoPostController } from '@/interfaces/controllers/doPost'
 import { FormDataStore } from './infrastructures/gas/datastore/form'
+import { OnFormSubmitRequest } from './infrastructures/gas/request/onFormSubmit'
+import { OnFormSubmitController } from './interfaces/controllers/onFormSubmit'
 
 declare const global: {
   [x: string]: any
@@ -42,6 +44,9 @@ global.onTimeDriven = (): void => {
 
 global.onFormSubmit = (e: GoogleAppsScript.Events.FormsOnFormSubmit): void => {
   try {
+    const controller = new OnFormSubmitController(paymentDataStore)
+    const request = new OnFormSubmitRequest(e)
+    controller.savePayment(request.savePaymentRequest())
   } catch (e) {
     console.error(e.stack)
   }

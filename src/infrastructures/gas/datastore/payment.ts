@@ -20,32 +20,61 @@ export class PaymentDataStore implements IPaymentDataStore {
     this.sheet = sheet
   }
 
-  private generatePayment(value: any[]): PaymentDataStructure {
-    return {
-      id: value[0],
-      url: value[1],
-      name: value[2],
-      date: value[3],
-      price: value[4],
-      category: value[5],
-      memo: value[6] || '',
-    }
+  public save(payment: PaymentDataStructure): boolean {
+    const lastRow = this.sheet.getLastRow()
+    const targetRow = lastRow + 1
+
+    this.sheet.getRange(targetRow, 1).setValue(payment.id)
+    this.sheet.getRange(targetRow, 2).setValue(payment.name)
+    this.sheet.getRange(targetRow, 3).setValue(payment.date)
+    this.sheet.getRange(targetRow, 4).setValue(payment.price)
+    this.sheet.getRange(targetRow, 5).setValue(payment.category)
+    this.sheet.getRange(targetRow, 6).setValue(payment.memo)
+    this.sheet.getRange(targetRow, 7).setValue(new Date())
+
+    return true
   }
 
-  private isSameMonth(date1: Date, date2: Date): boolean {
-    if (!date1 || !date2) {
-      return false
-    }
-    var y1 = date1.getFullYear()
-    var m1 = date1.getMonth() + 1
+  public destory(id: string): number {
+    const lastRow = this.sheet.getLastRow()
+    const values = this.sheet.getRange(2, 1, lastRow - 1).getValues()
 
-    var y2 = date2.getFullYear()
-    var m2 = date2.getMonth() + 1
+    let count = 0
 
-    return y1 === y2 && m1 === m2
+    values.forEach((items: any[], key: number) => {
+      if (items[0] === id) {
+        this.sheet.deleteRow(key + 2)
+        count++
+      }
+    })
+
+    return count
+  }
+
+  public find(id: string): PaymentDataStructure | null {
+    const payments = this.getAll().filter((payment: PaymentDataStructure) => {
+      return payment.id === id
+    })
+
+    return payments.length > 0 ? payments[0] : null
   }
 
   public getByDate(date: Date): PaymentDataStructure[] {
+    return this.getAll().filter((payment: PaymentDataStructure) => {
+      if (!payment.date || !date) {
+        return false
+      }
+      var y1 = payment.date.getFullYear()
+      var m1 = payment.date.getMonth()
+
+      var y2 = date.getFullYear()
+      var m2 = date.getMonth()
+
+      return y1 === y2 && m1 === m2
+    })
+  }
+
+  private getAll(): PaymentDataStructure[] {
     const lastRow = this.sheet.getLastRow()
     const lastColumn = this.sheet.getLastColumn()
 
@@ -57,12 +86,15 @@ export class PaymentDataStore implements IPaymentDataStore {
       .getRange(2, 1, lastRow - 1, lastColumn - 1)
       .getValues()
 
-    const payments = values.map((value: any[]) => {
-      return this.generatePayment(value)
-    })
-
-    return payments.filter((payment: PaymentDataStructure) => {
-      return this.isSameMonth(payment.date, date)
+    return values.map((value: any[]) => {
+      return {
+        id: value[0],
+        name: value[1],
+        date: value[2],
+        price: value[3],
+        category: value[4],
+        memo: value[5] || '',
+      }
     })
   }
 }
