@@ -23,6 +23,8 @@ export class SavePaymentUseCase {
       req.category,
       req.memo,
     )
-    this.paymentRepository.save(payment)
+    if (!this.paymentRepository.save(payment)) {
+      throw new Error('支出の登録に失敗しました。')
+    }
   }
 }

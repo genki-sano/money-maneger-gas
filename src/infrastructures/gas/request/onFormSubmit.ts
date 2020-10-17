@@ -2,6 +2,7 @@ import {
   IOnFormSubmitRequest,
   SavePaymentRequest,
 } from '@/infrastructures/request/onFormSubmit'
+import { formatDate } from '@/utils/date'
 
 interface Params {
   name: string
@@ -39,15 +40,9 @@ export class OnFormSubmitRequest implements IOnFormSubmitRequest {
       },
     )
 
-    const date = new Date()
-    const y = date.getFullYear()
-    const m = date.getMonth() + 1
-    const d = date.getDate()
-    const today = y + '-' + m + '-' + d
-
     return {
       name: values[0],
-      date: values[1] || today,
+      date: values[1] || formatDate(new Date(), '-'),
       price: values[2],
       category: values[3],
       memo: values[4] || '',

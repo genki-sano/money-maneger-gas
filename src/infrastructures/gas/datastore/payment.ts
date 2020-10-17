@@ -1,5 +1,6 @@
 import { PaymentDataStructure } from '@/applications/repositories/payment'
 import { IPaymentDataStore } from '@/infrastructures/datastore/payment'
+import { formatDate, formatDateTime, isSameMonth } from '@/utils/date'
 
 export class PaymentDataStore implements IPaymentDataStore {
   private readonly sheet: GoogleAppsScript.Spreadsheet.Sheet
@@ -26,24 +27,27 @@ export class PaymentDataStore implements IPaymentDataStore {
 
     this.sheet.getRange(targetRow, 1).setValue(payment.id)
     this.sheet.getRange(targetRow, 2).setValue(payment.name)
-    this.sheet.getRange(targetRow, 3).setValue(payment.date)
+    this.sheet.getRange(targetRow, 3).setValue(formatDate(payment.date, '/'))
     this.sheet.getRange(targetRow, 4).setValue(payment.price)
     this.sheet.getRange(targetRow, 5).setValue(payment.category)
     this.sheet.getRange(targetRow, 6).setValue(payment.memo)
-    this.sheet.getRange(targetRow, 7).setValue(new Date())
+    this.sheet.getRange(targetRow, 7).setValue(formatDateTime(new Date(), '/'))
 
     return true
   }
 
   public destory(id: string): number {
+    const startRow = 2
     const lastRow = this.sheet.getLastRow()
-    const values = this.sheet.getRange(2, 1, lastRow - 1).getValues()
+    const values = this.sheet
+      .getRange(startRow, 1, lastRow - (startRow - 1))
+      .getValues()
 
     let count = 0
 
     values.forEach((items: any[], key: number) => {
       if (items[0] === id) {
-        this.sheet.deleteRow(key + 2)
+        this.sheet.deleteRow(key + startRow)
         count++
       }
     })
@@ -61,20 +65,12 @@ export class PaymentDataStore implements IPaymentDataStore {
 
   public getByDate(date: Date): PaymentDataStructure[] {
     return this.getAll().filter((payment: PaymentDataStructure) => {
-      if (!payment.date || !date) {
-        return false
-      }
-      var y1 = payment.date.getFullYear()
-      var m1 = payment.date.getMonth()
-
-      var y2 = date.getFullYear()
-      var m2 = date.getMonth()
-
-      return y1 === y2 && m1 === m2
+      return isSameMonth(payment.date, date)
     })
   }
 
   private getAll(): PaymentDataStructure[] {
+    const startRow = 2
     const lastRow = this.sheet.getLastRow()
     const lastColumn = this.sheet.getLastColumn()
 
@@ -83,7 +79,7 @@ export class PaymentDataStore implements IPaymentDataStore {
     }
 
     const values = this.sheet
-      .getRange(2, 1, lastRow - 1, lastColumn - 1)
+      .getRange(startRow, 1, lastRow - (startRow - 1), lastColumn)
       .getValues()
 
     return values.map((value: any[]) => {

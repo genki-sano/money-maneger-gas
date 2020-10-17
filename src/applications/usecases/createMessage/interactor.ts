@@ -10,6 +10,7 @@ import { FlexMessage } from '@/domains/message/flexMessage'
 import { Message } from '@/domains/message/message'
 import { TextMessage } from '@/domains/message/textMessage'
 import { User } from '@/domains/user'
+import { numberWithDelimiter } from '@/utils'
 
 export class CreateMessageUseCase {
   private readonly fromRepository: IFormRepository
@@ -59,6 +60,12 @@ export class CreateMessageUseCase {
     )
   }
 
+  public createOtherMessage(): Message {
+    const formUrl = this.fromRepository.getPublishedUrl()
+    const text = 'フォームから支出を登録してね$ \n' + formUrl
+    return new TextMessage(text, this.getJamesWinkEmoji(text.indexOf('$')))
+  }
+
   private getTempReportMessageContents(women: User, men: User): FlexContainer {
     return {
       type: 'bubble',
@@ -93,7 +100,7 @@ export class CreateMessageUseCase {
                   },
                   {
                     type: 'text',
-                    text: `${this.numberWithDelimiter(women.price)}円`,
+                    text: `${numberWithDelimiter(women.price)}円`,
                     size: 'lg',
                     align: 'end',
                   },
@@ -112,7 +119,7 @@ export class CreateMessageUseCase {
                   },
                   {
                     type: 'text',
-                    text: `${this.numberWithDelimiter(men.price)}円`,
+                    text: `${numberWithDelimiter(men.price)}円`,
                     size: 'lg',
                     align: 'end',
                   },
@@ -128,17 +135,7 @@ export class CreateMessageUseCase {
     }
   }
 
-  public createOtherMessage(): Message {
-    const formUrl = this.fromRepository.getPublishedUrl()
-    const text = 'フォームから支出を登録してね$ \n' + formUrl
-    return new TextMessage(text, this.getJamesWinkEmoji(text.indexOf('$')))
-  }
-
   private getJamesWinkEmoji(index: number): Emoji {
     return new Emoji(index, '5ac1bfd5040ab15980c9b435', '098')
-  }
-
-  private numberWithDelimiter(num: number): string {
-    return String(num).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,')
   }
 }
