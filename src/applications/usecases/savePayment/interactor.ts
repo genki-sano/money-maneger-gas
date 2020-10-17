@@ -9,7 +9,7 @@ export class SavePaymentUseCase {
     this.paymentRepository = paymentRepository
   }
 
-  public savePayment(req: SavePaymentInputData): void {
+  public savePayment(req: SavePaymentInputData): boolean {
     const oldPayment = this.paymentRepository.find(req.id)
     if (!oldPayment) {
       this.paymentRepository.destory(req.id)
@@ -23,8 +23,7 @@ export class SavePaymentUseCase {
       req.category,
       req.memo,
     )
-    if (!this.paymentRepository.save(payment)) {
-      throw new Error('支出の登録に失敗しました。')
-    }
+
+    return this.paymentRepository.save(payment)
   }
 }

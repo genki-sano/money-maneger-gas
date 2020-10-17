@@ -14,7 +14,9 @@ export class OnFormSubmitController {
   }
 
   public savePayment(request: SavePaymentRequest): void {
-    const inputData = new SavePaymentInputData(request)
-    this.savePaymentUseCase.savePayment(inputData)
+    const saveInputData = new SavePaymentInputData(request)
+    if (!this.savePaymentUseCase.savePayment(saveInputData)) {
+      throw new Error('支出の登録に失敗しました。')
+    }
   }
 }
