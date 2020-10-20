@@ -29,3 +29,7 @@ export const isSameMonth = (date1: Date, date2: Date): boolean => {
 
   return y1 === y2 && m1 === m2
 }
+
+export const getLastMonth = (date: Date): Date => {
+  return new Date(date.getFullYear(), date.getMonth() - 1, 1)
+}

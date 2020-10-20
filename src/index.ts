@@ -5,6 +5,7 @@ import { DoPostController } from '@/interfaces/controllers/doPost'
 import { FormDataStore } from './infrastructures/gas/datastore/form'
 import { OnFormSubmitRequest } from './infrastructures/gas/request/onFormSubmit'
 import { OnFormSubmitController } from './interfaces/controllers/onFormSubmit'
+import { OnTimeDrivenController } from './interfaces/controllers/onTimeDriven'
 
 declare const global: {
   [x: string]: any
@@ -37,6 +38,13 @@ global.doPost = (
 
 global.onTimeDriven = (): void => {
   try {
+    const controller = new OnTimeDrivenController(
+      httpClient,
+      formDataStore,
+      paymentDataStore,
+      propatyDataStore,
+    )
+    controller.pushMonthlyReportMessage()
   } catch (e) {
     console.error(e.stack)
   }
