@@ -13,8 +13,8 @@ import { PropatyRepository } from '@/interfaces/repositories/propaty'
 import { IFormDataStore } from '@/infrastructures/datastore/form'
 
 export class DoPostController {
-  public readonly createMessageUseCase: CreateMessageUseCase
-  public readonly replyMessageUseCase: ReplyMessageUseCase
+  private readonly createMessageUseCase: CreateMessageUseCase
+  private readonly replyMessageUseCase: ReplyMessageUseCase
 
   constructor(
     httpClient: IHttpClient,

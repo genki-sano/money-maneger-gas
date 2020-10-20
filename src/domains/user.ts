@@ -1,10 +1,8 @@
 export class User {
-  public readonly id: string
   public readonly name: string
-  public readonly price: number
+  public price: number
 
-  public constructor(id: string, name: string, price: number) {
-    this.id = id
+  public constructor(name: string, price: number) {
     this.name = name
     this.price = price
   }

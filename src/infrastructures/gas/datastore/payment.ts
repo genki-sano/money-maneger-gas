@@ -74,7 +74,7 @@ export class PaymentDataStore implements IPaymentDataStore {
     const lastRow = this.sheet.getLastRow()
     const lastColumn = this.sheet.getLastColumn()
 
-    if (lastRow <= 0 || lastColumn <= 0) {
+    if (lastRow <= startRow - 1 || lastColumn <= 0) {
       return []
     }
 

@@ -9,8 +9,10 @@ import { Emoji } from '@/domains/message/emoji'
 import { FlexMessage } from '@/domains/message/flexMessage'
 import { Message } from '@/domains/message/message'
 import { TextMessage } from '@/domains/message/textMessage'
+import { Payment } from '@/domains/payment'
 import { User } from '@/domains/user'
 import { numberWithDelimiter } from '@/utils'
+import { formatDate } from '@/utils/date'
 
 export class CreateMessageUseCase {
   private readonly fromRepository: IFormRepository
@@ -28,17 +30,10 @@ export class CreateMessageUseCase {
   }
 
   public createTempReportMessage(): Message {
-    const women = {
-      name: this.propatyRepository.getWomenName(),
-      price: 0,
-    }
-    const men = {
-      name: this.propatyRepository.getMenName(),
-      price: 0,
-    }
+    const women = new User(this.propatyRepository.getWomenName(), 0)
+    const men = new User(this.propatyRepository.getMenName(), 0)
 
-    const date = new Date()
-    const payments = this.paymentRepository.getByDate(date)
+    const payments = this.paymentRepository.getByDate(new Date())
 
     payments.forEach((payment: PaymentDataStructure): void => {
       if (payment.name === women.name) {
@@ -51,12 +46,32 @@ export class CreateMessageUseCase {
       }
     })
 
-    const userW = new User('', women.name, women.price)
-    const userM = new User('', men.name, men.price)
-
     return new FlexMessage(
       '今月は下記金額を払っているよ！',
-      this.getTempReportMessageContents(userW, userM),
+      this.getTempReportMessageContents(women, men),
+    )
+  }
+
+  public createInsertReportMessage(payment: Payment): Message {
+    const women = new User(this.propatyRepository.getWomenName(), 0)
+    const men = new User(this.propatyRepository.getMenName(), 0)
+
+    const payments = this.paymentRepository.getByDate(new Date())
+
+    payments.forEach((payment: PaymentDataStructure): void => {
+      if (payment.name === women.name) {
+        women.price += payment.price
+        return
+      }
+      if (payment.name === men.name) {
+        men.price += payment.price
+        return
+      }
+    })
+
+    return new FlexMessage(
+      '支払い登録が完了したよ！',
+      this.getInsertReportMessageContents(payment, women, men),
     )
   }
 
@@ -131,6 +146,166 @@ export class CreateMessageUseCase {
           },
         ],
         spacing: 'md',
+      },
+    }
+  }
+
+  private getInsertReportMessageContents(
+    payment: Payment,
+    women: User,
+    men: User,
+  ): FlexContainer {
+    return {
+      type: 'bubble',
+      body: {
+        type: 'box',
+        layout: 'vertical',
+        contents: [
+          {
+            type: 'text',
+            text: '支出を入力したよ！',
+            size: 'sm',
+            margin: 'md',
+            color: '#aaaaaa',
+          },
+          {
+            type: 'text',
+            text: `${numberWithDelimiter(payment.price)}円`,
+            size: '3xl',
+            weight: 'bold',
+          },
+          {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'box',
+                layout: 'horizontal',
+                contents: [
+                  {
+                    type: 'text',
+                    text: '日付',
+                    color: '#aaaaaa',
+                    flex: 2,
+                    size: 'sm',
+                  },
+                  {
+                    type: 'text',
+                    text: `${formatDate(payment.date, '/')}`,
+                    flex: 5,
+                    size: 'sm',
+                  },
+                ],
+              },
+              {
+                type: 'box',
+                layout: 'horizontal',
+                contents: [
+                  {
+                    type: 'text',
+                    text: 'カテゴリ',
+                    color: '#aaaaaa',
+                    flex: 2,
+                    size: 'sm',
+                  },
+                  {
+                    type: 'text',
+                    text: payment.category,
+                    flex: 5,
+                    size: 'sm',
+                  },
+                ],
+              },
+              {
+                type: 'box',
+                layout: 'horizontal',
+                contents: [
+                  {
+                    type: 'text',
+                    text: 'メモ',
+                    color: '#aaaaaa',
+                    flex: 2,
+                    size: 'sm',
+                  },
+                  {
+                    type: 'text',
+                    text: payment.memo,
+                    flex: 5,
+                    size: 'sm',
+                  },
+                ],
+              },
+            ],
+            margin: 'lg',
+            spacing: 'xs',
+          },
+          {
+            type: 'separator',
+            margin: 'xxl',
+          },
+          {
+            type: 'box',
+            layout: 'vertical',
+            contents: [
+              {
+                type: 'box',
+                layout: 'horizontal',
+                contents: [
+                  {
+                    type: 'text',
+                    text: women.name,
+                    flex: 0,
+                    color: '#aaaaaa',
+                  },
+                  {
+                    type: 'text',
+                    text: `${numberWithDelimiter(women.price)}円`,
+                    align: 'end',
+                  },
+                ],
+              },
+              {
+                type: 'box',
+                layout: 'horizontal',
+                contents: [
+                  {
+                    type: 'text',
+                    text: men.name,
+                    flex: 0,
+                    color: '#aaaaaa',
+                  },
+                  {
+                    type: 'text',
+                    text: `${numberWithDelimiter(men.price)}円`,
+                    align: 'end',
+                  },
+                ],
+              },
+            ],
+            margin: 'xxl',
+            spacing: 'sm',
+          },
+        ],
+      },
+      footer: {
+        type: 'box',
+        layout: 'vertical',
+        contents: [
+          {
+            type: 'separator',
+          },
+          {
+            type: 'button',
+            color: '#ff5551',
+            action: {
+              type: 'postback',
+              label: '削除する',
+              data: `action=detele&&id=${payment.id}`,
+              displayText: '削除する',
+            },
+            margin: 'md',
+          },
+        ],
       },
     }
   }

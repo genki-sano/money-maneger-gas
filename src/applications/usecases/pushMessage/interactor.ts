@@ -1,10 +1,10 @@
 import { ILineRepository } from '@/applications/repositories/line'
 import { IPropatyRepository } from '@/applications/repositories/propaty'
 import { HttpClientConfig } from '@/domains/config/httpClientConfig'
-import { ReplayMessageRequestBody } from '@/domains/requestBody/replayMessage'
-import { ReplyMessageInputData } from './request'
+import { PushMessageRequestBody } from '@/domains/requestBody/pushMessage'
+import { PushMessageInputData } from './request'
 
-export class ReplyMessageUseCase {
+export class PushMessageUseCase {
   private readonly lineRepository: ILineRepository
   private readonly propatyRepository: IPropatyRepository
 
@@ -16,15 +16,23 @@ export class ReplyMessageUseCase {
     this.propatyRepository = propatyRepository
   }
 
-  public replyMessage(req: ReplyMessageInputData): void {
+  public pushMessage(req: PushMessageInputData): void {
     const httpClientConfig = new HttpClientConfig(
       this.propatyRepository.getChannelAccessToken(),
     )
-    const body = new ReplayMessageRequestBody(
-      req.replyToken,
+
+    const womenBody = new PushMessageRequestBody(
+      this.propatyRepository.getWomenId(),
       req.messages,
       req.notificationDisabled,
     )
-    this.lineRepository.replyMessage(httpClientConfig, body)
+    const menBody = new PushMessageRequestBody(
+      this.propatyRepository.getMenId(),
+      req.messages,
+      req.notificationDisabled,
+    )
+
+    this.lineRepository.pushMessage(httpClientConfig, womenBody)
+    this.lineRepository.pushMessage(httpClientConfig, menBody)
   }
 }

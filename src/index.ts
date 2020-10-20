@@ -44,7 +44,12 @@ global.onTimeDriven = (): void => {
 
 global.onFormSubmit = (e: GoogleAppsScript.Events.FormsOnFormSubmit): void => {
   try {
-    const controller = new OnFormSubmitController(paymentDataStore)
+    const controller = new OnFormSubmitController(
+      httpClient,
+      formDataStore,
+      paymentDataStore,
+      propatyDataStore,
+    )
     const request = new OnFormSubmitRequest(e)
     controller.savePayment(request.savePaymentRequest())
   } catch (e) {
