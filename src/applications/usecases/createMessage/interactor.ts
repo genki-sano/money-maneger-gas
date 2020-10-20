@@ -266,7 +266,7 @@ export class CreateMessageUseCase {
                   },
                   {
                     type: 'text',
-                    text: payment.memo,
+                    text: payment.memo || '(未入力)',
                     flex: 5,
                     size: 'sm',
                   },

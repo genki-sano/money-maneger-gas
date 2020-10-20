@@ -11,7 +11,6 @@ import { PaymentRepository } from '@/interfaces/repositories/payment'
 import { FormRepository } from '@/interfaces/repositories/form'
 import { LineRepository } from '@/interfaces/repositories/line'
 import { PropatyRepository } from '@/interfaces/repositories/propaty'
-import { Message } from '@/domains/message/message'
 import { PushMessageInputData } from '@/applications/usecases/pushMessage/request'
 
 export class OnFormSubmitController {
@@ -52,6 +51,7 @@ export class OnFormSubmitController {
     const pushInoutData = new PushMessageInputData([
       this.createMessageUseCase.createInsertReportMessage(payment),
     ])
+    console.log(JSON.stringify(pushInoutData))
     this.pushMessageUseCase.pushMessage(pushInoutData)
   }
 }
