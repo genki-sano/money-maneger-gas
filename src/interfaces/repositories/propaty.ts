@@ -1,5 +1,5 @@
 import { IPropatyRepository } from '@/applications/repositories/propaty'
-import { IPropatyDataStore } from '@/infrastructures/datastore/properties'
+import { IPropatyDataStore } from '@/interfaces/frameworks/datastore/properties'
 
 export class PropatyRepository implements IPropatyRepository {
   private readonly store: IPropatyDataStore

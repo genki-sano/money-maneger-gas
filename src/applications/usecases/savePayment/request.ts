@@ -1,5 +1,5 @@
 import { PaymentBusinessRule } from '@/domains/payment'
-import { SavePaymentRequest } from '@/infrastructures/request/onFormSubmit'
+import { SavePaymentRequest } from '@/interfaces/frameworks/request/onFormSubmit'
 
 export class SavePaymentInputData {
   public readonly id: string

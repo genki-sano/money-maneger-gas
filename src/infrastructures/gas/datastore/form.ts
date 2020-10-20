@@ -1,4 +1,4 @@
-import { IFormDataStore } from '@/infrastructures/datastore/form'
+import { IFormDataStore } from '@/interfaces/frameworks/datastore/form'
 
 export class FormDataStore implements IFormDataStore {
   private readonly form: GoogleAppsScript.Forms.Form

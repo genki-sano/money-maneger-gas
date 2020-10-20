@@ -1,7 +1,7 @@
 import {
   IOnFormSubmitRequest,
   SavePaymentRequest,
-} from '@/infrastructures/request/onFormSubmit'
+} from '@/interfaces/frameworks/request/onFormSubmit'
 import { formatDate } from '@/utils/date'
 
 interface Params {

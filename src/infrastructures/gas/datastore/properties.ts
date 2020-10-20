@@ -1,4 +1,4 @@
-import { IPropatyDataStore } from '@/infrastructures/datastore/properties'
+import { IPropatyDataStore } from '@/interfaces/frameworks/datastore/properties'
 
 export class PropatyDataStore implements IPropatyDataStore {
   public getProperty(key: string): string {

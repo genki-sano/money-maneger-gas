@@ -2,7 +2,7 @@ import {
   IPaymentRepository,
   PaymentDataStructure,
 } from '@/applications/repositories/payment'
-import { IPaymentDataStore } from '@/infrastructures/datastore/payment'
+import { IPaymentDataStore } from '@/interfaces/frameworks/datastore/payment'
 
 export class PaymentRepository implements IPaymentRepository {
   private readonly store: IPaymentDataStore

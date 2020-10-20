@@ -2,7 +2,7 @@ import { ILineRepository } from '@/applications/repositories/line'
 import { HttpClientConfig } from '@/domains/config/httpClientConfig'
 import { PushMessageRequestBody } from '@/domains/requestBody/pushMessage'
 import { ReplayMessageRequestBody } from '@/domains/requestBody/replayMessage'
-import { IHttpClient } from '@/infrastructures/client/httpClient'
+import { IHttpClient } from '@/interfaces/frameworks/client/httpClient'
 
 export class LineRepository implements ILineRepository {
   private readonly http: IHttpClient

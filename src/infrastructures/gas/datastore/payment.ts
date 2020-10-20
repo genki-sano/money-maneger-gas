@@ -1,5 +1,5 @@
 import { PaymentDataStructure } from '@/applications/repositories/payment'
-import { IPaymentDataStore } from '@/infrastructures/datastore/payment'
+import { IPaymentDataStore } from '@/interfaces/frameworks/datastore/payment'
 import { formatDate, formatDateTime, isSameMonth } from '@/utils/date'
 
 export class PaymentDataStore implements IPaymentDataStore {

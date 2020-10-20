@@ -2,7 +2,7 @@ import {
   IHttpClient,
   PostHttpHeaders,
   RequestBody,
-} from '@/infrastructures/client/httpClient'
+} from '@/interfaces/frameworks/client/httpClient'
 
 export class HttpClient implements IHttpClient {
   public post(

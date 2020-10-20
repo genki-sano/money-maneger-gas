@@ -1,5 +1,5 @@
 import { IFormRepository } from '@/applications/repositories/form'
-import { IFormDataStore } from '@/infrastructures/datastore/form'
+import { IFormDataStore } from '@/interfaces/frameworks/datastore/form'
 
 export class FormRepository implements IFormRepository {
   private readonly store: IFormDataStore
