@@ -81,6 +81,16 @@ export class CreateMessageUseCase {
     return new TextMessage(text, this.getJamesWinkEmoji(text.indexOf('$')))
   }
 
+  public createDeletedMessage(): Message {
+    const text = 'この支出は、すでに削除されています$'
+    return new TextMessage(text, this.getConyTroubleEmoji(text.indexOf('$')))
+  }
+
+  public createDeleteMessage(count: number): Message {
+    const text = `${count}件削除しました$`
+    return new TextMessage(text, this.getSallyPoseEmoji(text.indexOf('$')))
+  }
+
   private getTempReportMessageContents(women: User, men: User): FlexContainer {
     return {
       type: 'bubble',
@@ -300,7 +310,7 @@ export class CreateMessageUseCase {
             action: {
               type: 'postback',
               label: '削除する',
-              data: `action=detele&&id=${payment.id}`,
+              data: `action=delete&&id=${payment.id}`,
               displayText: '削除する',
             },
             margin: 'md',
@@ -308,6 +318,14 @@ export class CreateMessageUseCase {
         ],
       },
     }
+  }
+
+  private getConyTroubleEmoji(index: number): Emoji {
+    return new Emoji(index, '5ac1bfd5040ab15980c9b435', '058')
+  }
+
+  private getSallyPoseEmoji(index: number): Emoji {
+    return new Emoji(index, '5ac1bfd5040ab15980c9b435', '082')
   }
 
   private getJamesWinkEmoji(index: number): Emoji {

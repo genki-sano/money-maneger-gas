@@ -8,6 +8,10 @@ export class FormRepository implements IFormRepository {
     this.store = store
   }
 
+  public deleteResponse(id: string): number {
+    return this.store.deleteResponse(id)
+  }
+
   public getPublishedUrl(): string {
     return this.store.getPublishedUrl()
   }

@@ -11,6 +11,13 @@ export class FormDataStore implements IFormDataStore {
     this.form = form
   }
 
+  public deleteResponse(id: string): number {
+    const beforeCnt = this.form.getResponses().length
+    this.form.deleteResponse(id)
+    const afterCnt = this.form.getResponses().length
+    return beforeCnt - afterCnt
+  }
+
   public getPublishedUrl(): string {
     const url = this.form.getPublishedUrl()
     return this.form.shortenFormUrl(url)

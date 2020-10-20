@@ -11,9 +11,12 @@ import { LineRepository } from '@/interfaces/repositories/line'
 import { PaymentRepository } from '@/interfaces/repositories/payment'
 import { PropatyRepository } from '@/interfaces/repositories/propaty'
 import { IFormDataStore } from '@/infrastructures/datastore/form'
+import { DeletePaymentInputData } from '@/applications/usecases/deletePayment/request'
+import { DeletePaymentUseCase } from '@/applications/usecases/deletePayment/interactor'
 
 export class DoPostController {
   private readonly createMessageUseCase: CreateMessageUseCase
+  private readonly deletePaymentUseCase: DeletePaymentUseCase
   private readonly replyMessageUseCase: ReplyMessageUseCase
 
   constructor(
@@ -32,6 +35,10 @@ export class DoPostController {
       paymentRepository,
       propatyRepository,
     )
+    this.deletePaymentUseCase = new DeletePaymentUseCase(
+      formRepository,
+      paymentRepository,
+    )
     this.replyMessageUseCase = new ReplyMessageUseCase(
       lineRepository,
       propatyRepository,
@@ -39,35 +46,42 @@ export class DoPostController {
   }
 
   public replyMessage(request: WebhookRequestBody): void {
-    let messages: Message[] = []
-    let replyToken = ''
-
     request.events.forEach((event: WebhookEvent) => {
+      let messages: Message[] = []
+      let replyToken = ''
+
       if (event.type === 'message') {
         replyToken = event.replyToken
         if (event.message.type === 'text') {
           if (event.message.text === 'レポート') {
-            const message = this.createMessageUseCase.createTempReportMessage()
-            messages.push(message)
+            messages.push(this.createMessageUseCase.createTempReportMessage())
           } else {
-            const message = this.createMessageUseCase.createOtherMessage()
-            messages.push(message)
+            messages.push(this.createMessageUseCase.createOtherMessage())
           }
         } else {
-          const message = this.createMessageUseCase.createOtherMessage()
-          messages.push(message)
+          messages.push(this.createMessageUseCase.createOtherMessage())
         }
       }
+      if (event.type === 'postback') {
+        replyToken = event.replyToken
+        const deleteInputData = new DeletePaymentInputData(event.postback.data)
+        const cnt = this.deletePaymentUseCase.deletePayment(deleteInputData)
+        if (cnt === 0) {
+          messages.push(this.createMessageUseCase.createDeletedMessage())
+        } else {
+          messages.push(this.createMessageUseCase.createDeleteMessage(cnt))
+        }
+      }
+
+      if (replyToken === '' || messages.length === 0) {
+        return
+      }
+
+      const replyMessageInputData = new ReplyMessageInputData(
+        replyToken,
+        messages,
+      )
+      this.replyMessageUseCase.replyMessage(replyMessageInputData)
     })
-
-    if (replyToken === '' || messages.length === 0) {
-      return
-    }
-
-    const replyMessageInputData = new ReplyMessageInputData(
-      replyToken,
-      messages,
-    )
-    this.replyMessageUseCase.replyMessage(replyMessageInputData)
   }
 }
