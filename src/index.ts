@@ -1,21 +1,34 @@
+import { HttpClient } from '@/infrastructures/gas/client/httpClient'
+import { PaymentDataStore } from '@/infrastructures/gas/datastore/payment'
+import { PropatyDataStore } from '@/infrastructures/gas/datastore/properties'
+import { DoPostController } from '@/interfaces/controllers/doPost'
+import { FormDataStore } from './infrastructures/gas/datastore/form'
+import { OnFormSubmitRequest } from './infrastructures/gas/request/onFormSubmit'
+import { OnFormSubmitController } from './interfaces/controllers/onFormSubmit'
+import { OnTimeDrivenController } from './interfaces/controllers/onTimeDriven'
+
 declare const global: {
   [x: string]: any
 }
 
-import PushMessageController from '@/interfaces/controllers/line/pushMessage'
-import WebhookController from '@/interfaces/controllers/line/webhook'
-import { getProperty } from '@/utils/gas'
+const httpClient = new HttpClient()
+const formDataStore = new FormDataStore()
+const paymentDataStore = new PaymentDataStore()
+const propatyDataStore = new PropatyDataStore()
 
 global.doPost = (
   e: GoogleAppsScript.Events.DoPost,
 ): GoogleAppsScript.Content.TextOutput => {
   try {
-    const webhook = new WebhookController(
-      getProperty('LINE_CHANNEL_ACCESS_TOKEN'),
+    const controller = new DoPostController(
+      httpClient,
+      formDataStore,
+      paymentDataStore,
+      propatyDataStore,
     )
-    webhook.execute(JSON.parse(e.postData.contents))
+    controller.replyMessage(JSON.parse(e.postData.contents))
   } catch (e) {
-    console.log('ERROR: ', e.message)
+    console.error(e.stack)
   }
 
   return ContentService.createTextOutput(
@@ -23,26 +36,31 @@ global.doPost = (
   ).setMimeType(ContentService.MimeType.JSON)
 }
 
-global.pushMonthlyMessage = (): void => {
+global.onTimeDriven = (): void => {
   try {
-    const pushMessage = new PushMessageController(
-      getProperty('LINE_CHANNEL_ACCESS_TOKEN'),
+    const controller = new OnTimeDrivenController(
+      httpClient,
+      formDataStore,
+      paymentDataStore,
+      propatyDataStore,
     )
-    pushMessage.monthly()
+    controller.pushMonthlyReportMessage()
   } catch (e) {
-    console.log('ERROR: ', e.message)
+    console.error(e.stack)
   }
 }
 
-global.pushInsertMessage = (
-  e: GoogleAppsScript.Events.SheetsOnFormSubmit,
-): void => {
+global.onFormSubmit = (e: GoogleAppsScript.Events.FormsOnFormSubmit): void => {
   try {
-    const pushMessage = new PushMessageController(
-      getProperty('LINE_CHANNEL_ACCESS_TOKEN'),
+    const controller = new OnFormSubmitController(
+      httpClient,
+      formDataStore,
+      paymentDataStore,
+      propatyDataStore,
     )
-    pushMessage.insert(e.range)
+    const request = new OnFormSubmitRequest(e)
+    controller.savePayment(request.savePaymentRequest())
   } catch (e) {
-    console.log('ERROR: ', e.message)
+    console.error(e.stack)
   }
 }
