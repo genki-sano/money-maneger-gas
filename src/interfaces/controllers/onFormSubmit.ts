@@ -51,7 +51,6 @@ export class OnFormSubmitController {
     const pushInoutData = new PushMessageInputData([
       this.createMessageUseCase.createInsertReportMessage(payment),
     ])
-    console.log(JSON.stringify(pushInoutData))
     this.pushMessageUseCase.pushMessage(pushInoutData)
   }
 }
