@@ -27,6 +27,7 @@ export class Diff {
   }
 
   public get price(): number {
-    return Math.abs(this.women.price - this.men.price)
+    const diff = Math.abs(this.women.price - this.men.price)
+    return Math.ceil(diff / 2)
   }
 }
