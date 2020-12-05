@@ -14,7 +14,6 @@
     "rootDir": "./src",
     "downlevelIteration": true,
     "strict": true,
-    "noImplicitAny": true,
     "noUnusedLocals": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
