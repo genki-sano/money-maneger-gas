@@ -13,18 +13,18 @@ export class PropatyRepository implements IPropatyRepository {
   }
 
   public getWomenId(): string {
-    return this.store.getProperty('WOMEN_USER_ID')
+    return this.store.getProperty('WOMAN_USER_ID')
   }
 
   public getWomenName(): string {
-    return this.store.getProperty('WOMEN_NAME')
+    return this.store.getProperty('WOMAN_NAME')
   }
 
   public getMenId(): string {
-    return this.store.getProperty('MEN_USER_ID')
+    return this.store.getProperty('MAN_USER_ID')
   }
 
   public getMenName(): string {
-    return this.store.getProperty('MEN_NAME')
+    return this.store.getProperty('MAN_NAME')
   }
 }

@@ -10,11 +10,6 @@ export class SavePaymentUseCase {
   }
 
   public savePayment(req: SavePaymentInputData): Payment | null {
-    const oldPayment = this.paymentRepository.find(req.id)
-    if (oldPayment) {
-      this.paymentRepository.destory(req.id)
-    }
-
     const payment = new Payment(
       req.id,
       req.name,

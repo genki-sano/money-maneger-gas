@@ -25,13 +25,24 @@ export class PaymentDataStore implements IPaymentDataStore {
     const lastRow = this.sheet.getLastRow()
     const targetRow = lastRow + 1
 
-    this.sheet.getRange(targetRow, 1).setValue(payment.id)
-    this.sheet.getRange(targetRow, 2).setValue(payment.name)
-    this.sheet.getRange(targetRow, 3).setValue(formatDate(payment.date, '/'))
+    const lastId = this.sheet.getRange(lastRow, 1).getValue()
+
+    const man = PropertiesService.getScriptProperties().getProperty('MAN_NAME')
+    const userType = payment.name === man ? 2 : 1
+
+    const dateTime = formatDateTime(new Date(), '/')
+
+    this.sheet.getRange(targetRow, 1).setValue(parseInt(lastId) + 1)
+    this.sheet.getRange(targetRow, 2).setValue(userType)
+    this.sheet.getRange(targetRow, 3).setValue(payment.category)
     this.sheet.getRange(targetRow, 4).setValue(payment.price)
-    this.sheet.getRange(targetRow, 5).setValue(payment.category)
+    this.sheet.getRange(targetRow, 5).setValue(formatDate(payment.date, '/'))
     this.sheet.getRange(targetRow, 6).setValue(payment.memo)
-    this.sheet.getRange(targetRow, 7).setValue(formatDateTime(new Date(), '/'))
+    this.sheet.getRange(targetRow, 7).setValue(userType)
+    this.sheet.getRange(targetRow, 8).setValue(userType)
+    this.sheet.getRange(targetRow, 9).setValue(dateTime)
+    this.sheet.getRange(targetRow, 10).setValue(dateTime)
+    this.sheet.getRange(targetRow, 11).setFormula(`=DATEVALUE(E${targetRow})`)
 
     return true
   }
@@ -55,14 +66,6 @@ export class PaymentDataStore implements IPaymentDataStore {
     return count
   }
 
-  public find(id: string): PaymentDataStructure | null {
-    const payments = this.getAll().filter((payment: PaymentDataStructure) => {
-      return payment.id === id
-    })
-
-    return payments.length > 0 ? payments[0] : null
-  }
-
   public getByDate(date: Date): PaymentDataStructure[] {
     return this.getAll().filter((payment: PaymentDataStructure) => {
       return isSameMonth(payment.date, date)
@@ -78,6 +81,16 @@ export class PaymentDataStore implements IPaymentDataStore {
       return []
     }
 
+    const womanName = PropertiesService.getScriptProperties().getProperty(
+      'WOMAN_NAME',
+    )
+    const manName = PropertiesService.getScriptProperties().getProperty(
+      'MAN_NAME',
+    )
+    if (!womanName || !manName) {
+      return []
+    }
+
     const values = this.sheet
       .getRange(startRow, 1, lastRow - (startRow - 1), lastColumn)
       .getValues()
@@ -85,10 +98,10 @@ export class PaymentDataStore implements IPaymentDataStore {
     return values.map((value: any[]) => {
       return {
         id: value[0],
-        name: value[1],
-        date: value[2],
+        name: value[1] == 1 ? womanName : manName,
+        date: value[4],
         price: value[3],
-        category: value[4],
+        category: value[2],
         memo: value[5] || '',
       }
     })

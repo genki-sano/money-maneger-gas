@@ -19,10 +19,6 @@ export class PaymentRepository implements IPaymentRepository {
     return this.store.destory(id)
   }
 
-  public find(id: string): PaymentDataStructure | null {
-    return this.store.find(id) || null
-  }
-
   public getByDate(date: Date): PaymentDataStructure[] {
     return this.store.getByDate(date)
   }
