@@ -1,5 +1,4 @@
 import { FlexContainer } from '@/@types/line/message'
-import { IFormRepository } from '@/applications/repositories/form'
 import {
   IPaymentRepository,
   PaymentDataStructure,
@@ -16,16 +15,13 @@ import { numberWithDelimiter } from '@/utils'
 import { formatDate, getLastMonth } from '@/utils/date'
 
 export class CreateMessageUseCase {
-  private readonly fromRepository: IFormRepository
   private readonly paymentRepository: IPaymentRepository
   private readonly propatyRepository: IPropatyRepository
 
   constructor(
-    fromRepository: IFormRepository,
     paymentRepository: IPaymentRepository,
     propatyRepository: IPropatyRepository,
   ) {
-    this.fromRepository = fromRepository
     this.paymentRepository = paymentRepository
     this.propatyRepository = propatyRepository
   }

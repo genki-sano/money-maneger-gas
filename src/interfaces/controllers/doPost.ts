@@ -6,11 +6,9 @@ import { Message } from '@/domains/message/message'
 import { IHttpClient } from '@/interfaces/frameworks/client/httpClient'
 import { IPaymentDataStore } from '@/interfaces/frameworks/datastore/payment'
 import { IPropatyDataStore } from '@/interfaces/frameworks/datastore/properties'
-import { FormRepository } from '@/interfaces/repositories/form'
 import { LineRepository } from '@/interfaces/repositories/line'
 import { PaymentRepository } from '@/interfaces/repositories/payment'
 import { PropatyRepository } from '@/interfaces/repositories/propaty'
-import { IFormDataStore } from '@/interfaces/frameworks/datastore/form'
 import { DeletePaymentInputData } from '@/applications/usecases/deletePayment/request'
 import { DeletePaymentUseCase } from '@/applications/usecases/deletePayment/interactor'
 
@@ -21,24 +19,18 @@ export class DoPostController {
 
   constructor(
     httpClient: IHttpClient,
-    formStore: IFormDataStore,
     paymentStore: IPaymentDataStore,
     propatyStore: IPropatyDataStore,
   ) {
-    const formRepository = new FormRepository(formStore)
     const lineRepository = new LineRepository(httpClient)
     const paymentRepository = new PaymentRepository(paymentStore)
     const propatyRepository = new PropatyRepository(propatyStore)
 
     this.createMessageUseCase = new CreateMessageUseCase(
-      formRepository,
       paymentRepository,
       propatyRepository,
     )
-    this.deletePaymentUseCase = new DeletePaymentUseCase(
-      formRepository,
-      paymentRepository,
-    )
+    this.deletePaymentUseCase = new DeletePaymentUseCase(paymentRepository)
     this.replyMessageUseCase = new ReplyMessageUseCase(
       lineRepository,
       propatyRepository,

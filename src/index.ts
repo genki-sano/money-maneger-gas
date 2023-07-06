@@ -2,7 +2,6 @@ import { HttpClient } from '@/infrastructures/gas/client/httpClient'
 import { PaymentDataStore } from '@/infrastructures/gas/datastore/payment'
 import { PropatyDataStore } from '@/infrastructures/gas/datastore/properties'
 import { DoPostController } from '@/interfaces/controllers/doPost'
-import { FormDataStore } from './infrastructures/gas/datastore/form'
 import { OnTimeDrivenController } from './interfaces/controllers/onTimeDriven'
 
 declare const global: {
@@ -10,7 +9,6 @@ declare const global: {
 }
 
 const httpClient = new HttpClient()
-const formDataStore = new FormDataStore()
 const paymentDataStore = new PaymentDataStore()
 const propatyDataStore = new PropatyDataStore()
 
@@ -20,7 +18,6 @@ global.doPost = (
   try {
     const controller = new DoPostController(
       httpClient,
-      formDataStore,
       paymentDataStore,
       propatyDataStore,
     )
@@ -40,7 +37,6 @@ global.onTimeDriven = (): void => {
   try {
     const controller = new OnTimeDrivenController(
       httpClient,
-      formDataStore,
       paymentDataStore,
       propatyDataStore,
     )

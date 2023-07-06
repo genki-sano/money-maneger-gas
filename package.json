@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "deploy": "yarn run build && yarn run clasp push",
+    "deploy": "yarn clasp push",
     "prepare": "husky install",
     "lint-staged": "lint-staged"
   },
