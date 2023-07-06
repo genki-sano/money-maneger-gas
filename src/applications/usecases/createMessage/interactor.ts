@@ -30,27 +30,11 @@ export class CreateMessageUseCase {
     this.propatyRepository = propatyRepository
   }
 
-  public createTempReportMessage(): Message {
-    const women = new User(this.propatyRepository.getWomenName(), 0)
-    const men = new User(this.propatyRepository.getMenName(), 0)
-
-    const payments = this.paymentRepository.getByDate(new Date())
-
-    payments.forEach((payment: PaymentDataStructure): void => {
-      if (payment.name === women.name) {
-        women.price += payment.price
-        return
-      }
-      if (payment.name === men.name) {
-        men.price += payment.price
-        return
-      }
-    })
-
-    return new FlexMessage(
-      '今月は下記金額を払っているよ！',
-      this.getTempReportMessageContents(women, men),
-    )
+  public createGetUserIdMessage(
+    userId: string = '取得できませんでした。',
+  ): Message {
+    const text = 'あなたのUserIdは下記の通りです$ \n\n' + userId
+    return new TextMessage(text, this.getJamesWinkEmoji(text.indexOf('$')))
   }
 
   public createInsertReportMessage(payment: Payment): Message {
@@ -103,9 +87,8 @@ export class CreateMessageUseCase {
   }
 
   public createOtherMessage(): Message {
-    const formUrl = this.fromRepository.getPublishedUrl()
-    const text = 'フォームから支出を登録してね$ \n' + formUrl
-    return new TextMessage(text, this.getJamesWinkEmoji(text.indexOf('$')))
+    const text = 'その形式では返信できません$'
+    return new TextMessage(text, this.getConyTroubleEmoji(text.indexOf('$')))
   }
 
   public createDeletedMessage(): Message {
@@ -321,26 +304,6 @@ export class CreateMessageUseCase {
             ],
             margin: 'xxl',
             spacing: 'sm',
-          },
-        ],
-      },
-      footer: {
-        type: 'box',
-        layout: 'vertical',
-        contents: [
-          {
-            type: 'separator',
-          },
-          {
-            type: 'button',
-            color: '#ff5551',
-            action: {
-              type: 'postback',
-              label: '削除する',
-              data: `action=delete&&id=${payment.id}`,
-              displayText: '削除する',
-            },
-            margin: 'md',
           },
         ],
       },

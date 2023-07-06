@@ -1,8 +1,15 @@
 import { PaymentDataStructure } from '@/applications/repositories/payment'
 import { IPaymentDataStore } from '@/interfaces/frameworks/datastore/payment'
-import { formatDate, formatDateTime, isSameMonth } from '@/utils/date'
+import {
+  formatMonth,
+  formatDate,
+  formatDateTime,
+  isSameMonth,
+  dateToSn,
+} from '@/utils/date'
 
 export class PaymentDataStore implements IPaymentDataStore {
+  private readonly ss: GoogleAppsScript.Spreadsheet.Spreadsheet
   private readonly sheet: GoogleAppsScript.Spreadsheet.Sheet
 
   public constructor() {
@@ -18,10 +25,17 @@ export class PaymentDataStore implements IPaymentDataStore {
     if (!sheet) {
       throw new Error(`"payments"のシートが見つかりません。`)
     }
+    this.ss = ss
     this.sheet = sheet
   }
 
   public save(payment: PaymentDataStructure): boolean {
+    const month = formatMonth(payment.date, '-')
+    const sheet = this.ss.getSheetByName(month)
+    if (!sheet) {
+      this.addSheet(payment.date)
+    }
+
     const lastRow = this.sheet.getLastRow()
     const targetRow = lastRow + 1
 
@@ -45,6 +59,20 @@ export class PaymentDataStore implements IPaymentDataStore {
     this.sheet.getRange(targetRow, 11).setFormula(`=DATEVALUE(E${targetRow})`)
 
     return true
+  }
+
+  private addSheet(date: Date) {
+    const month = formatMonth(date, '-')
+    const sheet = this.ss.insertSheet(month, 3)
+
+    const thisMonth = new Date(date.getFullYear(), date.getMonth(), 1)
+    const nextMonth = new Date(date.getFullYear(), date.getMonth() + 1, 1)
+
+    const start = Math.floor(dateToSn(thisMonth))
+    const end = Math.floor(dateToSn(nextMonth))
+
+    const query = `=QUERY(payments!A2:K,"select A,B,C,D,E,F,G,H,I,J where K >= ${start} and K < ${end} order by K desc")`
+    sheet.getRange(1, 1).setFormula(query)
   }
 
   public destory(id: string): number {

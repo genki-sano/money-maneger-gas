@@ -1,0 +1,17 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "editor.formatOnSave": true,
+  "files.associations": {
+    ".*lintrc": "json",
+    ".babelrc": "json",
+    ".prettierrc": "json"
+  },
+  "files.exclude": {
+    "node_modules": true
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

@@ -53,8 +53,12 @@ export class DoPostController {
       if (event.type === 'message') {
         replyToken = event.replyToken
         if (event.message.type === 'text') {
-          if (event.message.text === 'レポート') {
-            messages.push(this.createMessageUseCase.createTempReportMessage())
+          if (event.message.text === 'id') {
+            messages.push(
+              this.createMessageUseCase.createGetUserIdMessage(
+                event.source.userId,
+              ),
+            )
           } else {
             messages.push(this.createMessageUseCase.createOtherMessage())
           }
