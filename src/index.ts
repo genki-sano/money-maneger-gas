@@ -3,12 +3,10 @@ import { PaymentDataStore } from '@/infrastructures/gas/datastore/payment'
 import { PropatyDataStore } from '@/infrastructures/gas/datastore/properties'
 import { DoPostController } from '@/interfaces/controllers/doPost'
 import { FormDataStore } from './infrastructures/gas/datastore/form'
-import { OnFormSubmitRequest } from './infrastructures/gas/request/onFormSubmit'
-import { OnFormSubmitController } from './interfaces/controllers/onFormSubmit'
 import { OnTimeDrivenController } from './interfaces/controllers/onTimeDriven'
 
 declare const global: {
-  [x: string]: any
+  [x: string]: unknown
 }
 
 const httpClient = new HttpClient()
@@ -27,8 +25,10 @@ global.doPost = (
       propatyDataStore,
     )
     controller.replyMessage(JSON.parse(e.postData.contents))
-  } catch (e) {
-    console.error(e.stack)
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.stack)
+    }
   }
 
   return ContentService.createTextOutput(
@@ -45,22 +45,9 @@ global.onTimeDriven = (): void => {
       propatyDataStore,
     )
     controller.pushMonthlyReportMessage()
-  } catch (e) {
-    console.error(e.stack)
-  }
-}
-
-global.onFormSubmit = (e: GoogleAppsScript.Events.FormsOnFormSubmit): void => {
-  try {
-    const controller = new OnFormSubmitController(
-      httpClient,
-      formDataStore,
-      paymentDataStore,
-      propatyDataStore,
-    )
-    const request = new OnFormSubmitRequest(e)
-    controller.savePayment(request.savePaymentRequest())
-  } catch (e) {
-    console.error(e.stack)
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(err.stack)
+    }
   }
 }
